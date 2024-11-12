@@ -26,7 +26,7 @@ int main(void) {
                     sprintf(buffer, "%d\t%d\r\n\0", total_x_distance, total_x_distance);
                     uart_sendStr(buffer);
                 }
-                break; */
+                break;*/
         }
         flag = 0;
     }
