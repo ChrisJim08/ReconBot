@@ -138,7 +138,7 @@ void calibrate() {
 
         ir = adc_read(); last = ping; ping = ping_read();
 
-        while((ping < last) || (abs(ping-last) > 10)) { sprintf(buffer, "%d\t%d\r\n\0",last, ping); uart_sendStr(buffer); ping = ping_read(); timer_waitMillis(250); }
+        while((ping < last) || (abs(ping-last) > 10)) { sprintf(buffer, "%d\t%d\r\n\0", last, ping); uart_sendStr(buffer); ping = ping_read(); timer_waitMillis(250); }
 
         sprintf(buffer, "%d\t %d\t %d\r\n\0", i+1, ir, ping); uart_sendStr(buffer);
 
