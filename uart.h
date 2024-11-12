@@ -8,8 +8,6 @@
 #include <inc/tm4c123gh6pm.h>
 #include "driverlib/interrupt.h"
 
-uint16_t ibrd = 8;
-uint16_t fbrd = 44;
 extern volatile char flag;
 extern volatile char uart_data;
 

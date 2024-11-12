@@ -10,6 +10,8 @@ void uart_init() {
     GPIO_PORTB_DIR_R   |=  0x01;            //Set PB0 & PB1 Direction
 
     //UART1 Initialization
+    uint16_t ibrd = 8;
+    uint16_t fbrd = 44;
     SYSCTL_RCGCUART_R  |= 0x02;             //Enable Clock
     UART1_CTL_R &= ~0x01;                   //Disable to Configure
     UART1_IBRD_R = ibrd;                    //Load Integer Portion of BRD
@@ -71,7 +73,7 @@ void socket_response(char letter){
 }
 
 void socket_echo (){
-    char my_data;       // Variable to get bytes from Client
+    char my_data = 1;       // Variable to get bytes from Client
     char command[100];  // Buffer to store command from Client
     int index = 0;      // Index position within the command buffer
 

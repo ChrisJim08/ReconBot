@@ -170,6 +170,6 @@ void initialize() {
     timer_init();   adc_init();   lcd_init();
     ping_initi();   uart_init();  servo_init();
     sensor_data   = oi_alloc();   IntMasterEnable();
-    ervo_move(0,90);
+    servo_move(0,90);
 
 }
