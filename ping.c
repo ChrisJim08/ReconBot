@@ -24,24 +24,25 @@ void ping_initi(){
 
 
 int ping_read(){
-    float time; send_pulse();                   //Send pulse
+    float time;
 
-    while(state != DONE);                       //Wait until times are captured
+    send_pulse();
+    while(state != DONE);
 
-    if(rising_time >= falling_time) {           //Calculate time
+    if(rising_time >= falling_time) {           //Overflow Handler
         time = (rising_time - falling_time);
     }
-    else{                                       //Wrap around case
+    else{
         time =  ((rising_time + 0xFFFFFE) - falling_time);
     }
 
-    state = LOW;                                //Reset state
+    state = LOW;
     return ((time*343)/(2*160000));
 }
 
 
 void send_pulse() {
-    GPIO_PORTB_AFSEL_R      &= ~0x08;       //Set PB3 as a peripheral
+    GPIO_PORTB_AFSEL_R      &= ~0x08;       //Set PB3 as peripheral
     TIMER3_IMR_R            &= ~0x400;      //Mask Timer3B interrupt
     GPIO_PORTB_DIR_R        |= 0x08;        //Set PB3 to output
     GPIO_PORTB_DATA_R       |= 0x08;        //Set PB3 high
@@ -56,27 +57,27 @@ void send_pulse() {
 
 
 void ping_interrupt_init() {
-    //Ping Interrrupt Initiazation
-    NVIC_EN1_R         |= 0x10;                         //Enable Interrupt
+    //Ping Interrrupt Initialization
+    NVIC_EN1_R         |= 0x10;                         //Enable
     TIMER3_IMR_R       |= 0x400;                        //Un-mask Interrupt
     TIMER3_ICR_R       |= 0x400;                        //Clear Interrupt
-    IntRegister(INT_TIMER3B, ping_interrupt_handler);   //Bind ISR
+    IntRegister(INT_TIMER3B, ping_interrupt_handler);   //Bind ISR Handler
 }
 
 
 void ping_interrupt_handler() {
-    if (TIMER3_MIS_R & 0x400) {                                         //Check masked interrupt status
+    if (TIMER3_MIS_R & 0x400) {
         switch (state) {
             case LOW:
-                rising_time = (TIMER3_TBPS_R << 16) | TIMER3_TBR_R;     //Capture time of event's rising edge
+                rising_time = (TIMER3_TBPS_R << 16) | TIMER3_TBR_R;     //Event Rising Edge Time
                 state = HIGH;
                 break;
             case HIGH:
-                falling_time = (TIMER3_TBPS_R << 16) | TIMER3_TBR_R;    //Capture time of event's falling edge
+                falling_time = (TIMER3_TBPS_R << 16) | TIMER3_TBR_R;    //Event Falling Edge Time
                 state = DONE;
                 break;
         }
     }
-    TIMER3_ICR_R |= 0x400;                                              //Clear interrupt
+    TIMER3_ICR_R |= 0x400;
 }
 
