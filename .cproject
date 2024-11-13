@@ -172,4 +172,5 @@
 		<project id="Final.com.ti.ccstudio.buildDefinitions.TMS470.ProjectType.784406366" name="TMS470" projectType="com.ti.ccstudio.buildDefinitions.TMS470.ProjectType"/>
 	</storageModule>
 	<storageModule moduleId="scannerConfiguration"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cproject>

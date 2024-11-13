@@ -138,7 +138,15 @@ void calibrate() {
 
         ir = adc_read(); last = ping; ping = ping_read();
 
-        while((ping < last) || (abs(ping-last) > 10)) { sprintf(buffer, "%d\t%d\r\n", last, ping); uart_sendStr(buffer); ping = ping_read(); timer_waitMillis(250); }
+        j = 0;
+        while((ping < last) || (abs(ping-last) > 10)) {
+            sprintf(buffer, "%d\t%d\r\n", last, ping);
+            uart_sendStr(buffer);
+            ping = ping_read();
+            timer_waitMillis(250);
+            if (j > 10) { move_backward(sensor_data, 0.5); }
+            j++;
+        }
 
         sprintf(buffer, "%d\t %d\t %d\r\n", i+1, ir, ping); uart_sendStr(buffer);
 
@@ -155,21 +163,22 @@ void calibrate() {
 }
 
 double det(matrix mx) {
-    return (  mx.m[0][0] * (mx.m[1][1] * mx.m[2][2] - mx.m[1][2] * mx.m[2][1])
-            - mx.m[0][1] * (mx.m[1][0] * mx.m[2][2] - mx.m[1][2] * mx.m[2][0])
-            + mx.m[0][2] * (mx.m[1][0] * mx.m[2][1] - mx.m[1][1] * mx.m[2][0]) );
+    return (   mx.m[0][0] * (mx.m[1][1] * mx.m[2][2] - mx.m[1][2] * mx.m[2][1])
+             - mx.m[0][1] * (mx.m[1][0] * mx.m[2][2] - mx.m[1][2] * mx.m[2][0])
+             + mx.m[0][2] * (mx.m[1][0] * mx.m[2][1] - mx.m[1][1] * mx.m[2][0]) );
 }
 
 matrix M_i(int i) {
-    int j; matrix mi = M;
+    matrix mi = M;
     for (j = 0; j < 3; j++) mi.m[j][i] = b[j];
     return mi;
 }
 
 void initialize() {
     timer_init();   adc_init();   lcd_init();
-    ping_initi();   uart_init();  servo_init();
+    ping_initi();
+    uart_init();
+    servo_init();
     sensor_data   = oi_alloc();   IntMasterEnable();
     servo_move(0,90);
-
 }

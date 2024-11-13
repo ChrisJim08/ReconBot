@@ -1,13 +1,13 @@
 #include "movement.h"
 
-void move_foward(oi_t *sensor, int mm ) {
+void move_foward(oi_t *sensor, double cm ) {
     oi_init(sensor);
     double i = 0;
-    int cm = mm*10;
+    double mm = cm*10;
 
     oi_setWheels(100, 100);
 
-    while(i < cm) {
+    while(i < mm) {
         oi_update(sensor);
         i += sensor->distance;
 
@@ -30,12 +30,12 @@ void move_foward(oi_t *sensor, int mm ) {
 
 }
 
-void move_backward(oi_t *sensor, int mm ) {
+void move_backward(oi_t *sensor, double cm ) {
         oi_init(sensor);
         double i = 0;
-        int cm = mm*10;
+        double mm = cm*10;
         oi_setWheels(-100, -100);
-        while(i < cm) {
+        while(i < mm) {
             oi_update(sensor);
             i -= sensor->distance;
         }
@@ -60,7 +60,7 @@ void turn_clockwise(oi_t *sensor, int deg) {
 
 void turn_cclockwise(oi_t *sensor, int deg) {
     oi_init(sensor);
-    double i = 0;
+    int i = 0;
 
     oi_setWheels(-50, 50);
 

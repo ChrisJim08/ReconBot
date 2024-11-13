@@ -22,8 +22,8 @@ char buffer[50];
 double a2, a1, a0;
 oi_t *sensor_data;
 float small_distance = 0;
-int i, small_deg = 0, b[3] = {0};
 volatile char flag = 0, uart_data;
+int i, j, small_deg = 0, b[3] = {0};
 volatile signed int total_x_distance = 0, total_y_distance = 0;
 
 void scan();
