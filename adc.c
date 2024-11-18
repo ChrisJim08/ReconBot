@@ -11,7 +11,7 @@ void adc_init() {
 
     //ADC Initialization
     SYSCTL_RCGCADC_R  |= 0x01;                  //Enable clock for ADC
-    timer_waitMillis(1);
+    timer_waitMillis(250);
     ADC0_ACTSS_R   &= ~0x01;                    //Disable to Configure
     ADC0_EMUX_R    &= ~0x0F;                    //Default trigger source
     ADC0_SSMUX1_R   = 0x0A;                     //all samples in sequence for AIN10

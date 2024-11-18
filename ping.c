@@ -9,6 +9,7 @@ void ping_initi(){
 
     //Timer 3 Initialization
     SYSCTL_RCGCTIMER_R |= 0x08;                 //Enable clock
+    timer_waitMillis(250);
     TIMER3_CTL_R       &= ~0x100;               //Disable to Configure
     TIMER3_CFG_R        = 0x04;                 //16 bits
     TIMER3_TBMR_R       = 0x07;                 //Input Edge-Time Mode (Input Capture)
@@ -51,8 +52,8 @@ void send_pulse() {
     GPIO_PORTB_DIR_R        &= ~0x08;       //Set PB3 to input
     GPIO_PORTB_AFSEL_R      |= 0x08;        //Set PB3 as a peripheral
 
-    TIMER3_ICR_R |= 0x400;                  //Clear Timer3B interrupt
-    TIMER3_IMR_R |= 0x400;                  //Unmask Timer3B interrupt
+    TIMER3_ICR_R            |= 0x400;       //Clear Timer3B interrupt
+    TIMER3_IMR_R            |= 0x400;       //Unmask Timer3B interrupt
 }
 
 

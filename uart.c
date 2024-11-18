@@ -13,6 +13,7 @@ void uart_init() {
     uint16_t ibrd = 8;
     uint16_t fbrd = 44;
     SYSCTL_RCGCUART_R  |= 0x02;             //Enable Clock
+    timer_waitMillis(250);
     UART1_CTL_R &= ~0x01;                   //Disable to Configure
     UART1_IBRD_R = ibrd;                    //Load Integer Portion of BRD
     UART1_FBRD_R = fbrd;                    //Load Fractional Portion of BRD
@@ -70,9 +71,10 @@ void uart_interrupt_handler() {
 void socket_response(char letter){
     uart_sendChar(letter);
     uart_sendChar('\n');
+    uart_sendChar('\r');
 }
 
-void socket_echo (){
+void socket_echo(){
     char my_data = 1;       // Variable to get bytes from Client
     char command[100];  // Buffer to store command from Client
     int index = 0;      // Index position within the command buffer

@@ -1,0 +1,11 @@
+IDEAS
+------
+Mapping
+Grouping similar sized together
+
+
+FEATURES
+---------
+Auto - Calibration
+Coordinate - System 
+360 - Scan 

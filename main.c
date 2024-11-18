@@ -3,30 +3,31 @@
 int main(void) {
     initialize();
 
+    //socket_echo();
     while(1){
-        while(!flag);
-        switch (uart_data) {
+        //while(!flag);
+        //switch (uart_data) {
+        switch ('o') {
             case 'm':
-                socket_response('m');
-                scan(); break;
+                scan(); socket_response('m'); break;
             case 'w':
-                socket_response('w');
-                move_foward(sensor_data, 1); break;
+                move_foward(sensor_data, 1); socket_response('w'); break;
             case 'a':
-                socket_response('a');
-                turn_clockwise(sensor_data, 10); break;
+                turn_clockwise(sensor_data, 10); socket_response('a'); break;
             case 's':
-                socket_response('s');
-                move_backward(sensor_data, 1); break;
+                move_backward(sensor_data, 1); socket_response('s'); break;
             case 'd':
-                socket_response('d');
-                turn_cclockwise(sensor_data, 10); break;
+                turn_cclockwise(sensor_data, 10); socket_response('d'); break;
             case 'h':
-                socket_response('h');
-                scan(); auto_move(); break;
+                scan(); auto_move(); socket_response('h'); break;
             case 'c':
-                socket_response('c');
-                calibrate(); break;
+                calibrate(); socket_response('c'); break;
+            case 'o':
+                while (1) {
+                    sprintf(buffer, "%d   %d", total_x_distance, total_y_distance);
+                    lcd_printf(buffer);
+                }
+                break;
         }
         flag = 0;
     }
@@ -48,10 +49,11 @@ void scan() {
         servo_move(0, angle); timer_waitMillis(300);
         int ir = adc_read(); distances[angle/2] = a2*pow(ir, 2) + a1*ir + a0;
 
-       sprintf(buffer, "%d\t\t%f\r\n", angle, distances[angle/2]); uart_sendStr(buffer);
+       sprintf(buffer, "%d\t\t%.2f\r\n", angle, distances[angle/2]); uart_sendStr(buffer);
 
        angle += 2;
     }
+    uart_sendStr("END\n");
 
     for(i = 1; i < 91; i++) { //DETECT OBJECTS
         last_curr = fabs(distances[i-1] - distances[i]);
@@ -129,26 +131,26 @@ void auto_move() {
 }
 
 void calibrate() {
-    int ir, ping = 0, last;
+    int ir, ping = 10, last;
 
     servo_move(0, 90); move_backward(sensor_data, 6);
 
-    for(i = 0; i < 20; i++){
+    for(i = 0; i < 15; i++){
         timer_waitMillis(1000);
 
-        ir = adc_read(); last = ping; ping = ping_read();
+        ir = adc_read(); last = ping;
+        ping = ping_read();
 
         j = 0;
-        while((ping < last) || (abs(ping-last) > 10)) {
-            sprintf(buffer, "%d\t%d\r\n", last, ping);
-            uart_sendStr(buffer);
+        while((ping < last) || (abs(ping-last) > 6)) {
+            //sprintf(buffer, "%d\t%d\r\n", last, ping); uart_sendStr(buffer);
             ping = ping_read();
             timer_waitMillis(250);
-            if (j > 10) { move_backward(sensor_data, 0.5); }
+            if (!(j % 10)) { move_backward(sensor_data, 0.5); }
             j++;
         }
 
-        sprintf(buffer, "%d\t %d\t %d\r\n", i+1, ir, ping); uart_sendStr(buffer);
+        //sprintf(buffer, "%d\t %d\t %d\r\n", i+1, ir, ping); uart_sendStr(buffer);
 
         M.m[0][0]+= 1;            M.m[0][1]+= ir;           M.m[0][2]+= pow(ir,2);    b[0] += ping;
         M.m[1][0]+= ir;           M.m[1][1]+= pow(ir,2);    M.m[1][2]+= pow(ir,3);    b[1] += ping * ir;
@@ -159,7 +161,7 @@ void calibrate() {
 
     double detM = det(M);       a0 = det(M_i(0)) / detM;
     a1 = det(M_i(1)) / detM;    a2 = det(M_i(2)) / detM;
-    sprintf(buffer, "y = %.8f*x^2 + %.8f*x + %.8f\r\n", a2, a1, a0); uart_sendStr(buffer);
+    //sprintf(buffer, "y = %.8f*x^2 + %.8f*x + %.8f\r\n", a2, a1, a0); uart_sendStr(buffer);
 }
 
 double det(matrix mx) {
@@ -179,6 +181,7 @@ void initialize() {
     ping_initi();
     uart_init();
     servo_init();
+    optical_init();
     sensor_data   = oi_alloc();   IntMasterEnable();
-    servo_move(0,90);
+    //servo_move(0,90);
 }

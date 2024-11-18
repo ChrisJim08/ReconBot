@@ -1,6 +1,8 @@
 #ifndef LAB_3_OPTICAL_H
 #define LAB_3_OPTICAL_H
 
+#include "lcd.h"                                        //For Debugging
+#include "Timer.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <inc/tm4c123gh6pm.h>
